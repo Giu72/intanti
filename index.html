@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Più Siamo, Meno Paghiamo!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      background-color: #fffaf0;
+    }
+    img {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #333;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #ff5733;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #e03d1a;
+    }
+    .counter-box {
+      background-color: #ffe600;
+      border-radius: 12px;
+      width: 250px;
+      margin: 30px auto 0;
+      padding: 20px 20px 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      position: relative;
+      color: #000;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .arrow-icon {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff5733;
+      color: white;
+      font-size: 28px;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    #timer {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #ff5733;
+    }
+    form {
+      margin-top: 30px;
+    }
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 90%;
+      max-width: 300px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg" alt="Una pizza Margherita invitante" />
+  <h1>Se siamo in 50 paghiamo solo 25€</h1>
+
+  <button id="partecipaBtn" aria-label="Partecipa all'offerta">Partecipa Ora</button>
+  <button id="annullaBtn" aria-label="Annulla la tua iscrizione">Annulla iscrizione</button>
+
+  <div id="timer">Tempo rimasto: 05:00</div>
+
+  <div class="counter-box">
+    <div class="arrow-icon">↑</div>
+    Al momento siamo <span id="counter">0</span>
+  </div>
+
+  <!-- Form inizialmente nascosto -->
+  <div id="formContainer" style="display: none;">
+    <form action="https://formsubmit.co/giusepperomeo029@gmail.com" method="POST">
+  <input type="text" name="nome" placeholder="Il tuo nome" required>
+  <input type="email" name="email" placeholder="La tua email" required>
+
+  <!-- Campi invisibili utili per redirect o no captcha -->
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="https://giu72.github.io/_in100/grazie.html">
+
+  <button type="submit">Conferma</button>
+</form>
+
+  </div>
+
+  <script>
+    const partecipaBtn = document.getElementById('partecipaBtn');
+    const annullaBtn = document.getElementById('annullaBtn');
+    const counterEl = document.getElementById('counter');
+    const formContainer = document.getElementById('formContainer');
+    const timerEl = document.getElementById('timer');
+
+    let partecipantiCount = 0;
+    const maxPartecipanti = 50;
+    let totalSeconds = 300;
+
+    partecipaBtn.addEventListener('click', () => {
+      if (partecipantiCount >= maxPartecipanti) {
+        alert("Il numero massimo di partecipanti è stato raggiunto!");
+        return;
+      }
+
+      formContainer.style.display = 'block';
+      partecipantiCount++;
+      counterEl.textContent = partecipantiCount;
+
+      if (partecipantiCount >= maxPartecipanti) {
+        partecipaBtn.disabled = true;
+      }
+    });
+
+    annullaBtn.addEventListener('click', () => {
+      if (partecipantiCount > 0) {
+        partecipantiCount--;
+        counterEl.textContent = partecipantiCount;
+        alert("Hai annullato la tua partecipazione.");
+        formContainer.style.display = 'none';
+        partecipaBtn.disabled = false;
+      } else {
+        alert("Non ci sono iscritti da annullare.");
+      }
+    });
+
+    function updateTimer() {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerEl.textContent = `Tempo rimasto: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+      if (totalSeconds > 0) {
+        totalSeconds--;
+      } else {
+        clearInterval(timerInterval);
+        partecipaBtn.disabled = true;
+        alert("Tempo scaduto! Non è più possibile iscriversi.");
+        formContainer.style.display = 'none';
+      }
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  </script>
+
+</body>
+</html>
